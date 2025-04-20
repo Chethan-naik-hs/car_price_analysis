@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-file-earmark-text"></i> File: {{ results.filename }}</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Rows:</strong> {{ "{:,}".format(results.shape[0]) }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Columns:</strong> {{ results.shape[1] }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-card-checklist"></i> Summary Statistics</h5>
+            </div>
+            <div class="card-body overflow-auto" style="max-height: 400px;">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Statistic</th>
+                                {% for col in results.summary_stats.keys() %}
+                                <th>{{ col }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat, values in results.summary_stats.items() %}
+                            <tr>
+                                <td><strong>{{ stat }}</strong></td>
+                                {% for col, val in values.items() %}
+                                <td>{{ "%.2f"|format(val) if val is number else val }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Missing Values</h5>
+            </div>
+            <div class="card-body overflow-auto" style="max-height: 400px;">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Column</th>
+                                <th>Missing Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for col, count in results.missing_values.items() %}
+                            <tr>
+                                <td>{{ col }}</td>
+                                <td>{{ count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mt-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="bi bi-table"></i> Data Preview (First 5 Rows)</h5>
+    </div>
+    <div class="card-body overflow-auto">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead class="table-light">
+                    <tr>
+                        {% for col in results.columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results.head %}
+                    <tr>
+                        {% for col, val in row.items() %}
+                        <td>{{ val }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% for title, plot in plots %}
+<div class="card shadow mt-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0"><i class="bi bi-bar-chart-line"></i> {{ title }}</h5>
+    </div>
+    <div class="card-body text-center">
+        <img src="data:image/png;base64,{{ plot }}" alt="{{ title }}" class="img-fluid rounded">
+    </div>
+</div>
+{% endfor %}
+
+
+{% if buyer_plot %}
+<div class="card shadow mt-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Top Ford Models by Buyer Type</h5>
+    </div>
+    <div class="card-body text-center">
+        <img src="data:image/png;base64,{{ buyer_plot }}" alt="Buyer Type Analysis" class="img-fluid rounded">
+    </div>
+</div>
+{% endif %}
+
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+        <i class="bi bi-arrow-left"></i> Analyze Another File
+    </a>
+</div>
+{% endblock %}

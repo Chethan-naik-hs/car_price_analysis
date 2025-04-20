@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Upload CSV{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-cloud-arrow-up"></i> Upload Your Car Data</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">Select CSV File (max 500MB)</label>
+                        <input class="form-control form-control-lg" type="file" name="file" id="fileInput" accept=".csv" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-graph-up"></i> Analyze Data
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="progress mt-3 d-none" id="uploadProgress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%">0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Expected CSV Format</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><code>sellingprice</code> - Numeric field with car prices</li>
+                    <li class="list-group-item"><code>model</code> - Car model names</li>
+                    <li class="list-group-item"><code>year</code> - Manufacturing year</li>
+                    <li class="list-group-item"><code>mileage</code> - Odometer reading</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('fileInput');
+    const progressBar = document.getElementById('uploadProgress');
+    const maxSize = 500 * 1024 * 1024; // 500MB
+    
+    if (fileInput.files[0].size > maxSize) {
+        alert('File exceeds 500MB limit. Please choose a smaller file.');
+        e.preventDefault();
+        return false;
+    }
+    
+    // Show progress bar
+    progressBar.classList.remove('d-none');
+    
+    // Update progress (this is just for show - actual progress needs XHR)
+    let percent = 0;
+    const interval = setInterval(() => {
+        percent += 5;
+        if (percent > 90) clearInterval(interval);
+        progressBar.querySelector('.progress-bar').style.width = percent + '%';
+        progressBar.querySelector('.progress-bar').textContent = percent + '%';
+    }, 300);
+    
+    return true;
+});
+</script>
+{% endblock %}

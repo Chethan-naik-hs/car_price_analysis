@@ -1,0 +1,39 @@
+:root {
+    --primary-color: #4e79a7;
+    --secondary-color: #f28e2b;
+    --accent-color: #e15759;
+    --light-bg: #f8f9fa;
+    --dark-bg: #343a40;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    border-radius: 0.5rem;
+    border: none;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.progress {
+    height: 1.5rem;
+}
+
+.progress-bar {
+    font-size: 0.9rem;
+}
+
+.number-format {
+    font-family: monospace;
+}
